@@ -29,7 +29,17 @@ export function activate ( context: vscode.ExtensionContext ) {
         let d = e.document;
         let { selections } = e;
         
-        let options: InputBoxOptions = { placeHolder: 'Enter a number to add to the selected number(s)' };
+        let options: InputBoxOptions = {
+            prompt: 'Enter a number to add to the selected number(s)'
+            , placeHolder: '7'
+            // , validateInput: value => {
+            //     const val = +value;
+            //     console.log( 'should be valid?', val, typeof val );
+            //     return typeof val === 'number'
+            //         ? '' 
+            //         : 'Please input a number to add to selected number(s)'
+            // }
+        };
 
         // Display a message box to the user
         vscode.window.showInputBox( options )
@@ -52,26 +62,30 @@ function addNumbers ( a: number, b: number ) : string {
 
 function processSelection ( e: TextEditor, d: TextDocument, sel: Selection[], formatCb, argsCb = [] ) {
     var replaceRanges: Selection[] = [];
+    var numberToAdd = +argsCb[0];
 
-	e.edit( edit => {
-        // itterate through the selections
-        sel.forEach( ( item, i ) => {
-            let txt: string = d.getText( new Range( item.start, item.end ) );
+    if ( !Number.isNaN( numberToAdd ) ) {
+        e.edit( edit => {
+            // itterate through the selections
+            sel.forEach( ( item, i ) => {
+                let txt: string = d.getText( new Range( item.start, item.end ) );
+                let num: number = +txt;
+                
+                if ( numberToAdd ) {
+                    txt = formatCb.apply( this, [ txt, numberToAdd ] );
+                }
 
-            if ( argsCb.length > 0 ) {
-                txt = formatCb.apply( this, [ txt, argsCb[0] ] );
-            } else {
-                txt = formatCb( txt );
-            }
-
-            edit.replace( sel[i], txt );
-            let startPos: Position = new Position( item.start.line, item.start.character );
-            let endPos: Position = new Position( item.start.line + txt.split( /\r\n|\r|\n/ ).length - 1, item.start.character + txt.length );
-            replaceRanges.push( new Selection( startPos, endPos ) );            
+                edit.replace( sel[i], txt );
+                let startPos: Position = new Position( item.start.line, item.start.character );
+                let endPos: Position = new Position( item.start.line + txt.split( /\r\n|\r|\n/ ).length - 1, item.start.character + txt.length );
+                replaceRanges.push( new Selection( startPos, endPos ) );
+            });
         });
-    });
 
-	e.selections = replaceRanges;
+        e.selections = replaceRanges;
+    } else {
+        console.error( 'Input text is NaN!', numberToAdd );
+    }
 }
 
 // this method is called when your extension is deactivated
