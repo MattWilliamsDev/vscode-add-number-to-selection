@@ -14,3 +14,6 @@ Example:
 - Press enter
 
 **NOTE:** Extension uses typecasting (`var sel = +selection`) to convert selections to numbers for addition.
+
+## Demo
+![Demo](assets/demo.gif)

@@ -17,10 +17,6 @@ import InputBoxOptions = vscode.InputBoxOptions;
 // your extension is activated the very first time the command is executed
 export function activate ( context: vscode.ExtensionContext ) {
 
-    // Use the console to output diagnostic information (console.log) and errors (console.error)
-    // This line of code will only be executed once when your extension is activated
-    console.log( 'Congratulations, your extension "addnumbertoselection" is now active!' );
-
     // The command has been defined in the package.json file
     // Now provide the implementation of the command with registerCommand
     // The commandId parameter must match the command field in package.json
@@ -32,13 +28,6 @@ export function activate ( context: vscode.ExtensionContext ) {
         let options: InputBoxOptions = {
             prompt: 'Enter a number to add to the selected number(s)'
             , placeHolder: '7'
-            // , validateInput: value => {
-            //     const val = +value;
-            //     console.log( 'should be valid?', val, typeof val );
-            //     return typeof val === 'number'
-            //         ? '' 
-            //         : 'Please input a number to add to selected number(s)'
-            // }
         };
 
         // Display a message box to the user
@@ -50,7 +39,6 @@ export function activate ( context: vscode.ExtensionContext ) {
                     vscode.window.showInformationMessage( 'You must select some number text before to add a number to' )
                 }
             });
-            // .catch( err => console.error( err || 'Error inputting number to add' ) );
     });
 
     context.subscriptions.push( disposable );
